@@ -8,10 +8,17 @@ Studierende müssen aus begrenzten Karten (Ressourcen) ein optimales Lernarrange
 
 - Zufällige Anforderungssituation wird geladen (Tod des Hundes, Glaube & Wissenschaft, Identitätskonflikt …).
 - Ressourcen-Karten mit Kosten und Tags (z. B. „Empathie-Interview“, „Genesis-Comic“, „Identitäts-Workshop“).
-- Begrenztes Budget (100 Punkte) – Priorisierung nötig.
-- Auswertung:
-    • Deckt das Arrangement alle benötigten Kompetenz-Punkte ab?
-    • Wie effizient wurde das Budget genutzt?
+
+🧩 Spiel-Prinzip im Überblick
+
+| Ressource	| Beispiel-Karte| Was sie liefert | 
+| --------- | ------------- | --------------- | 
+| Kompetenz	| „Empathie entwickeln“ | → 2 Punkte empathie, 1 Punkt religion| 
+| Inhalt	| „Leid & Trost (Bibelstellen)“ | → 2 Punkte leid, 1 Punkt rituale| 
+| Methode	| „Gesprächskreis“ | → 1 Punkt gespraech, 1 Punkt reflexion| 
+| Setting	| „Doppelstunde“ | → 2 Punkte zeit| 
+
+Das Budget von 100 zwingt zu Priorisierung und Kombination – ganz so, wie es Lehrkräfte täglich tun.
 
 
 **🎯 Didaktische Zusätze (optional)**
