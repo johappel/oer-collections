@@ -48,7 +48,7 @@
     <div id="arrangement">
       <h3>Dein Arrangement (<span id="total">0</span>)</h3>
     </div>
-    <button onclick="evaluate()">Auswerten</button>
+    <button onclick="checkArrangement()">Auswerten</button>
     <button onclick="newRound()">Neue Runde</button>
     <div id="score"></div>
   </div>
@@ -136,7 +136,7 @@ function updateArrangement() {
   document.getElementById('score').textContent = '';
 }
 
-function evaluate() {
+function checkArrangement() {
   const needs = {...current.needs};
   selected.forEach(i => {
     cards[i].tags.forEach(t => {
