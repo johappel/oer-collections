@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <title>Anforderungssituationen – Lernarrangement-Builder</title>
-<p><a href="https://github.com/johappel/oer-collections/blob/main/relpaed-games/anforderungssituationen-builder.md">Anleitung</a></p>
+  <p><a href="https://github.com/johappel/oer-collections/blob/main/relpaed-games/anforderungssituationen-builder.md">Anleitung</a></p>
 <style>
   :root { --c1:#005a9c; --c2:#f3f6fb; --radius:10px; --shadow:0 2px 8px rgba(0,0,0,.15); }
   body { margin:0; font-family:system-ui, sans-serif; background:var(--c2); display:flex; flex-direction:column; align-items:center; padding:2rem; }
-  h1 { color:var(--c1); margin-bottom:1rem; }
+  h1 { color:var(--c1); margin-bottom:.5rem; }
   #game { max-width:1000px; width:100%; display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; }
-  #challenge { background:#fff; border-radius:var(--radius); padding:1rem; box-shadow:var(--shadow); }
+  #challenge, #resources, #arrangement { background:#fff; border-radius:var(--radius); padding:1rem; box-shadow:var(--shadow); }
   #challenge h2 { margin-top:0; color:var(--c1); }
-  #resources, #arrangement { display:flex; flex-direction:column; gap:.5rem; }
+  #needs li { margin:.2rem 0; }
   .card {
     background:#fff; border-radius:var(--radius); padding:.8rem; box-shadow:var(--shadow);
     cursor:pointer; transition:all .2s; user-select:none;
@@ -21,7 +21,10 @@
   .card h4 { margin:0 0 .3rem 0; font-size:.95rem; }
   .card small { color:#555; }
   #budget { font-weight:bold; color:var(--c1); margin-bottom:.5rem; }
-  #score { margin-top:1rem; font-weight:bold; }
+  #score { margin-top:1rem; font-weight:bold; padding:.5rem; border-radius:var(--radius); }
+  .success { background:#d4f7d4; color:#0a660a; }
+  .fail { background:#fce8e8; color:#8a0e0e; }
+  button { margin-top:.5rem; padding:.5rem 1rem; border:none; border-radius:var(--radius); background:var(--c1); color:#fff; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -46,6 +49,7 @@
       <h3>Dein Arrangement (<span id="total">0</span>)</h3>
     </div>
     <button onclick="evaluate()">Auswerten</button>
+    <button onclick="newRound()">Neue Runde</button>
     <div id="score"></div>
   </div>
 </div>
@@ -79,7 +83,14 @@ const cards = [
 
 let budget = 100;
 let selected = [];
-let current = situations[Math.floor(Math.random()*situations.length)];
+let current = {};
+
+function newRound() {
+  current = situations[Math.floor(Math.random()*situations.length)];
+  selected = [];
+  budget = 100;
+  render();
+}
 
 function render() {
   document.getElementById('situationText').textContent = current.title;
@@ -93,7 +104,7 @@ function render() {
   resDiv.innerHTML = '<h3>Ressourcen-Karten (Kosten in Klammern)</h3>';
   cards.forEach((c,i) => {
     const div = document.createElement('div');
-    div.className = 'card';
+    div.className = 'card' + (selected.includes(i) ? ' selected' : '');
     div.dataset.index = i;
     div.innerHTML = `<h4>${c.name} (${c.cost})</h4><small>${c.tags.join(', ')}</small>`;
     div.onclick = () => toggle(i);
@@ -129,16 +140,24 @@ function evaluate() {
   const needs = {...current.needs};
   selected.forEach(i => {
     cards[i].tags.forEach(t => {
-      if(needs[t]) needs[t]--;
+      if(needs[t] > 0) needs[t]--;
     });
   });
   const missing = Object.values(needs).reduce((a,b)=>a+b,0);
   const totalCost = 100 - budget;
   const efficiency = totalCost > 0 ? Math.round(100*(10-missing)/totalCost) : 0;
-  document.getElementById('score').innerHTML = missing ? `Fehlen noch ${missing} Punkte.` : `Perfekt! Effizienz: ${efficiency}%`;
+
+  const scoreDiv = document.getElementById('score');
+  if (missing === 0) {
+    scoreDiv.className = 'success';
+    scoreDiv.innerHTML = `Perfekt! Effizienz: ${efficiency}%`;
+  } else {
+    scoreDiv.className = 'fail';
+    scoreDiv.innerHTML = `Fehlen noch ${missing} Punkte. Effizienz: ${efficiency}%`;
+  }
 }
 
-render();
+newRound();
 </script>
 </body>
 </html>
