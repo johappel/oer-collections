@@ -153,25 +153,61 @@ function updateArrangement(){
   document.getElementById('score').textContent='';
 }
 
-function checkArrangement(){
-  const needs={};
+function checkArrangement() {
+  /* ---------- Bedarfsprüfung ---------- */
+  const needs = {};
   ['kompetenz','inhalt','methode','setting'].forEach(dim=>{
-    needs[dim]={...current.needs[dim]};
+    needs[dim] = {...current.needs[dim]};
     selected[dim].forEach(idx=>{
       Object.entries(sectors[dim][idx].points).forEach(([k,v])=>{
-        if(needs[dim][k]) needs[dim][k]-=v;
+        if(needs[dim][k]) needs[dim][k] -= v;
       });
     });
   });
-  const missing=Object.values(needs).reduce((sum,dim)=>sum+Object.values(dim).reduce((a,b)=>a+Math.max(0,b),0),0);
-  const totalCost=100-budget;
-  const efficiency=totalCost>0?Math.round(100*(10-missing)/totalCost):0;
 
-  const scoreDiv=document.getElementById('score');
-  scoreDiv.className = missing===0?'success':'fail';
-  scoreDiv.innerHTML = missing===0
-    ?`Perfekt! Effizienz: ${efficiency}%`
-    :`Fehlen noch ${missing} Punkte. Effizienz: ${efficiency}%`;
+  const missingTotal = Object.values(needs)
+    .reduce((sum,dim)=>sum+Object.values(dim).reduce((a,b)=>a+Math.max(0,b),0),0);
+
+  const totalCost = 100 - budget;
+
+  /* ---------- Sprachliches Feedback ---------- */
+  const scoreDiv = document.getElementById('score');
+  scoreDiv.className = '';
+
+  if (missingTotal === 0) {
+    if (totalCost <= 60) {
+      scoreDiv.className = 'success';
+      scoreDiv.innerHTML = `
+        <strong>Glückwunsch!</strong><br>
+        Das Arrangement ist <em>schlank, aber vollständig</em> – Sie haben Luft für Pufferzeiten oder Vertiefung.
+      `;
+    } else if (totalCost <= 85) {
+      scoreDiv.className = 'success';
+      scoreDiv.innerHTML = `
+        <strong>Solide Planung!</strong><br>
+        Alle Ziele abgedeckt, Budget fast ausgeschöpft – so kann es in die Stundenplanung.
+      `;
+    } else {
+      scoreDiv.className = 'fail';
+      scoreDiv.innerHTML = `
+        <strong>Alles drin – aber knapp am Limit.</strong><br>
+        Kein Spielraum mehr für technische Pannen oder vertiefende Nachfragen.
+      `;
+    }
+  } else {
+    const gaps = [];
+    Object.entries(needs).forEach(([dim,req])=>{
+      Object.entries(req).forEach(([k,v])=>{
+        if (v > 0) gaps.push(`${k}`);
+      });
+    });
+    scoreDiv.className = 'fail';
+    scoreDiv.innerHTML = `
+      <strong>Lückenhaftes Arrangement</strong><br>
+      Folgende Aspekte fehlen oder sind zu dünn besetzt: ${gaps.join(', ')}.<br>
+      Überlegen Sie, ob Sie Prioritäten setzen oder Ressourcen umschichten.
+    `;
+  }
 }
 
 newRound();
