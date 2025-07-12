@@ -4,8 +4,8 @@ Studierende müssen aus begrenzten Karten (Ressourcen) ein optimales Lernarrange
 
 **Genre**: Deck-Builder & Budget-Manager
 
-<img width="1436" height="753" alt="grafik" src="https://github.com/user-attachments/assets/99480442-0473-443e-8cf9-14b381a4080a" />
-
+[<img width="1436" height="753" alt="grafik" src="https://github.com/user-attachments/assets/99480442-0473-443e-8cf9-14b381a4080a" />
+](https://johappel.github.io/oer-collections/relpaed-games/anforderungssituationen-builder.html)
 
 ## 🎮 Spielablauf
 
@@ -72,3 +72,5 @@ const sectors={
   ]
 };
 ```
+
+Demo: [https://johappel.github.io/oer-collections/relpaed-games/anforderungssituationen-builder.html](https://johappel.github.io/oer-collections/relpaed-games/anforderungssituationen-builder.html)
