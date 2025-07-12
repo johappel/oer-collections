@@ -4,6 +4,9 @@ Studierende müssen aus begrenzten Karten (Ressourcen) ein optimales Lernarrange
 
 **Genre**: Deck-Builder & Budget-Manager
 
+<img width="1436" height="753" alt="grafik" src="https://github.com/user-attachments/assets/99480442-0473-443e-8cf9-14b381a4080a" />
+
+
 ## 🎮 Spielablauf
 
 - Zufällige Anforderungssituation wird geladen (Tod des Hundes, Glaube & Wissenschaft, Identitätskonflikt …).
