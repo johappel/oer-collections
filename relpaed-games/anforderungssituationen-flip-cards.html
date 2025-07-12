@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anforderungssituationen – Flip-Card Lernspiel</title>
+  <style>
+    :root {
+      --primary: #005a9c;
+      --secondary: #f3f6fb;
+      --radius: 12px;
+      --shadow: 0 4px 14px rgba(0,0,0,.15);
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    h1 { color: var(--primary); margin-bottom: 1rem; }
+    #board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 960px;
+      width: 100%;
+    }
+    .card {
+      perspective: 1000px;
+      cursor: pointer;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      transition: transform .6s;
+      transform-style: preserve-3d;
+    }
+    .card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    .card-front, .card-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      border-radius: var(--radius);
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+      background: var(--primary);
+      color: #fff;
+    }
+    .tag {
+      font-size: .8rem;
+      font-weight: 600;
+      margin-bottom: .5rem;
+      color: var(--primary);
+    }
+    .card-back .tag {
+      color: #ffd77c;
+    }
+    .task {
+      margin-top: .5rem;
+      font-size: .95rem;
+    }
+    button {
+      margin-top: 2rem;
+      padding: .6rem 1.4rem;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--primary);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Anforderungssituationen – Flip-Card Lernspiel</h1>
+  <p><a href="https://www.die-bibel.de/ressourcen/wirelex/3-methoden-und-medien/anforderungssituationen">Lest den Artikel von Hartmut Lenhard</a>. Nischt die Aufgabenkarten neu und sucht euch anschließend eine beliebige aufgabe heraus. Viel erfolg!</p>
+
+  <button onclick="shuffleCards()">Neu mischen</button>
+
+  <div id="board"></div>
+
+  <script>
+    const cards = [
+      {
+        tag: "Begriff",
+        front: "„Anforderungssituation“ ist ein Schlüsselbegriff der Kompetenzorientierung.",
+        back: {
+          task: "Erkläre mit eigenen Worten, warum Klieme meint, Kompetenz sei nur in konkreten Situationen sichtbar.",
+          hint: "Denke an Alltagssituationen, in denen du Wissen & Können gleichzeitig brauchst – z. B. Streit schlichten."
+        }
+      },
+      {
+        tag: "Struktur",
+        front: "Anforderungssituationen sind immer fachspezifisch zu bestimmen.",
+        back: {
+          task: "Formuliere eine religiöse Anforderungssituation, die sich NICHT mit „richtig/falsch“ lösen lässt.",
+          hint: "z. B. „Was bedeutet ‚Vergebung‘ für einen, der schweres Unrecht erlebt hat?“"
+        }
+      },
+      {
+        tag: "Didaktik",
+        front: "Anforderungssituationen sollen „didaktische Widerhaken“ setzen.",
+        back: {
+          task: "Entwirf eine kleine Unterrichtssequenz, die mit einer echten Lebensfrage startet.",
+          hint: "Nutze Obsts Struktur: existenzielle Frage → Konflikt → theologische Perspektive."
+        }
+      },
+      {
+        tag: "Kritik (Schweitzer)",
+        front: "„Langeweile droht, wenn immer nur ‚Finde den religiösen Aspekt!‘ verlangt wird“.",
+        back: {
+          task: "Überlege, wie du diese Kritik entkräften oder konstruktiv aufnehmen würdest.",
+          hint: "Variantenvielfalt: narrative, rituelle, ethische Zugänge statt ‚Suche‘-Schema."
+        }
+      },
+      {
+        tag: "Kritik (Schröder)",
+        front: "Anforderungssituationen drohen zu „dekontextualisiert“ und „übergestülpt“ zu wirken.",
+        back: {
+          task: "Entwickle ein Kriterium, das sicherstellt, dass die Situation wirklich ‚dem Schüler gehört‘.",
+          hint: "Beteiligung der Lernenden bei der Auswahl oder Mitgestaltung der Situation."
+        }
+      },
+      {
+        tag: "Kritik (Husmann)",
+        front: "„Das Leben hält andere Herausforderungen bereit, als wir planen können.“",
+        back: {
+          task: "Diskutiere: Wo ist die Grenze sinnvoller Vorausschau?",
+          hint: "Beispiel: Welche Kompetenzen aus dem RU waren in der Pandemie plötzlich relevant?"
+        }
+      },
+      {
+        tag: "Kritik (Fricke)",
+        front: "Nicht jedes Thema lässt sich alltagsnah „herbeiholen“.",
+        back: {
+          task: "Suche ein Beispiel aus der Kirchengeschichte, das trotz Distanz lebensnah wirken kann.",
+          hint: "Reformation & Freiheit – Bezug zu aktuellen Freiheitsdebatten herstellen."
+        }
+      },
+      {
+        tag: "Rezeption",
+        front: "Anforderungssituationen wurden schnell in Lehrwerke und Curricula übertragen.",
+        back: {
+          task: "Erkläre, warum gerade Praktiker*innen den Begriff begeistert aufgriffen.",
+          hint: "Verbindung zwischen Lebenswelt und Fachinhalten wird sichtbar und planbar."
+        }
+      },
+      {
+        tag: "Offene Fragen",
+        front: "Müssen Anforderungssituationen echt oder dürfen sie fiktiv sein?",
+        back: {
+          task: "Teste beide Varianten mit einer Klasse: vergleiche Motivation & Tiefe.",
+          hint: "Fiktives Szenario: „Ein KI-Pfarrer hält deine Beerdigung.“"
+        }
+      },
+      {
+        tag: "Transfer",
+        front: "Die 8 Kriterien von Bürig-Heinze u. a. gelten als Qualitätsrahmen.",
+        back: {
+          task: "Wähle ein Kriterium und bewerte damit eine Anforderungssituation aus deinem Schulalltag.",
+          hint: "Beispielkriterium: ‚Wirklichkeitsnähe‘ – Skala 1-5 begründen."
+        }
+      }
+    ];
+
+    function renderCards(data) {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      data.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-inner">
+            <div class="card-front">
+              <span class="tag">${c.tag}</span>
+              <p>${c.front}</p>
+            </div>
+            <div class="card-back">
+              <span class="tag">Aufgabe</span>
+              <p>${c.back.task}</p>
+              <p class="task"><em>Hinweis:</em> ${c.back.hint}</p>
+            </div>
+          </div>`;
+        card.addEventListener('click', () => card.classList.toggle('flipped'));
+        board.appendChild(card);
+      });
+    }
+
+    function shuffleCards() {
+      const shuffled = [...cards].sort(() => Math.random() - 0.5);
+      renderCards(shuffled);
+    }
+
+    shuffleCards(); // Initiale Darstellung
+  </script>
+</body>
+</html>
